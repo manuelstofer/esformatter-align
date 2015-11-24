@@ -48,6 +48,11 @@ describe('compare input/output', function() {
       var output = esformatter.format(getFile('8.in'), {});
       expect(output).to.be.eql(getFile('8.out'));
     });
+
+    it('should also remove whitespace to align', function() {
+      var output = esformatter.format(getFile('9.in'), {});
+      expect(output).to.be.eql(getFile('9.out'));
+    });
   });
 });
 
