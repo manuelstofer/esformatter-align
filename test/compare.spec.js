@@ -53,6 +53,11 @@ describe('compare input/output', function() {
       var output = esformatter.format(getFile('9.in'), {});
       expect(output).to.be.eql(getFile('9.out'));
     });
+
+    it('should align assignment AssignmentExpression', function() {
+      var output = esformatter.format(getFile('10.in'), {});
+      expect(output).to.be.eql(getFile('10.out'));
+    });
   });
 });
 

@@ -1,0 +1,5 @@
+var bla;
+var hello;
+
+bla = 1;
+hello = 2;

@@ -10,12 +10,18 @@ exports.setOptions = function(opts) {
 exports.transform = function(ast) {
   rocambole.walk(ast, function(node) {
 
-    if (node.type == 'ObjectExpression') {
+    if (alignedNodes.indexOf(node) !== -1) return;
+
+    if (isObjectExpression(node)) {
       alignObjectExpression(node);
     }
 
-    if (node.type == 'VariableDeclaration') {
+    if (isVariableDeclaration(node)) {
       alignVariableDeclaration(node);
+    }
+
+    if (isExpressionStatement(node) && isAssignmentExpression(node.expression)) {
+      alignAssignmentExpression(node);
     }
   });
 };
@@ -28,13 +34,8 @@ function alignObjectExpression(node) {
 }
 
 function alignVariableDeclaration(node) {
-  if (alignedNodes.indexOf(node) !== -1) return;
 
-  var nodes = [];
-  while (node && node.type == 'VariableDeclaration') {
-    nodes.push(node);
-    node = node.next;
-  }
+  var nodes = getNext(node, isVariableDeclaration);
 
   alignedNodes = alignedNodes.concat(nodes);
 
@@ -48,6 +49,23 @@ function alignVariableDeclaration(node) {
 
   align(tokens);
 
+}
+
+
+function alignAssignmentExpression(node) {
+  var nodes = getNext(node, function(node) {
+    return isExpressionStatement(node) && isAssignmentExpression(node.expression);
+  });
+
+  alignedNodes = alignedNodes.concat(nodes);
+
+  var tokens = nodes
+    .map(function(node) {
+      return findNextInLine(node.expression.left.startToken, isEqualPunctuator);
+    })
+    .filter(truthy);
+
+  align(tokens);
 }
 
 function align(tokens) {
@@ -110,6 +128,15 @@ function getTokenLine(token) {
   return line;
 }
 
+function getNext(node, callback) {
+  var nodes = [];
+  while (node && callback(node)) {
+    nodes.push(node);
+    node = node.next;
+  }
+  return nodes;
+}
+
 function findPrevious(token, callback) {
   while (token) {
     if (callback(token)) return token;
@@ -146,6 +173,22 @@ function isEqualPunctuator(token) {
 
 function truthy(v) {
   return !!v;
+}
+
+function isVariableDeclaration(node) {
+  return node.type === 'VariableDeclaration';
+}
+
+function isExpressionStatement(node) {
+  return node.type === 'ExpressionStatement';
+}
+
+function isAssignmentExpression(node) {
+  return node.type === 'AssignmentExpression';
+}
+
+function isObjectExpression(node) {
+  return node.type === 'ObjectExpression';
 }
 
 function repeat(str, n) {
