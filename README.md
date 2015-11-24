@@ -20,7 +20,7 @@ and add to your esformatter config file:
     "esformatter-align"
   ]
 }
-``
+```
 
 ## Examples
 
