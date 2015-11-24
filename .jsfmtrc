@@ -1,0 +1,14 @@
+{
+  "preset": "default",
+  "plugins": [
+    "esformatter-semicolons",
+    "esformatter-quotes",
+    "esformatter-var-each",
+    "esformatter-align",
+    "esformatter-eol-last"
+  ],
+  "quotes": {
+    "type": "single",
+    "avoidEscape": true
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "name": "esformatter-align",
+  "version": "0.0.1",
+  "description": "esformatter alignment plugin",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha --ui bdd --reporter spec test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/manuelstofer/esformatter-align.git"
+  },
+  "keywords": [
+    "esformatter",
+    "esformatter-plugin",
+    "alignment",
+    "AST"
+  ],
+  "author": "Manuel Stofer (http://smallpdf.com)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/manuelstofer/esformatter-align/issues"
+  },
+  "homepage": "https://github.com/manuelstofer/esformatter-align",
+  "devDependencies": {
+    "mocha": "https://github.com/millermedeiros/mocha/tarball/latest",
+    "chai": "^3.4",
+    "esformatter": "^0.8.1"
+  },
+  "dependencies": {
+    "array-flatten": "^2.0.0",
+    "rocambole": "^0.7.0"
+  }
+}

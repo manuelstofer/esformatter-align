@@ -1,0 +1,4 @@
+var longer = require('hello');
+var small  = require('hello');
+
+var muchlonger = require('hello');

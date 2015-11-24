@@ -1,0 +1,6 @@
+function bla() {
+  var x = 0;
+  for (var y = 10; y < 20; y++) {
+    console.log(x + y);
+  }
+}

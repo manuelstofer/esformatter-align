@@ -1,0 +1,3 @@
+var longer       = require('hello');
+let small        = require('hello');
+const muchlonger = require('hello');
