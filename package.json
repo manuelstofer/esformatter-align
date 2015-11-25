@@ -23,9 +23,10 @@
   },
   "homepage": "https://github.com/manuelstofer/esformatter-align",
   "devDependencies": {
-    "mocha": "https://github.com/millermedeiros/mocha/tarball/latest",
     "chai": "^3.4",
-    "esformatter": "^0.8.1"
+    "esformatter": "^0.8.1",
+    "esformatter-limit-linebreaks": "0.0.2",
+    "mocha": "https://github.com/millermedeiros/mocha/tarball/latest"
   },
   "dependencies": {
     "array-flatten": "^2.0.0",

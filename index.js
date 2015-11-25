@@ -51,7 +51,6 @@ function alignVariableDeclaration(node) {
 
 }
 
-
 function alignAssignmentExpression(node) {
   var nodes = getNext(node, function(node) {
     return isExpressionStatement(node) && isAssignmentExpression(node.expression);
