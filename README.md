@@ -22,7 +22,9 @@ and add to your esformatter config file:
 }
 ```
 
-## Examples
+## Alignments
+
+### VariableDeclarations
 
 input:
 
@@ -39,6 +41,8 @@ var longer     = require('hello');
 var small      = require('hello');
 var muchlonger = require('hello');
 ```
+
+### ObjectExpressions
 
 input:
 
@@ -57,6 +61,23 @@ var x = {
   bla: ''
 };
 ```
+
+### AssignmentExpressions
+
+input:
+
+```js
+foo = 'bar';
+fooooooo = 'baz';
+```
+
+output:
+
+```js
+foo      = 'bar';
+fooooooo = 'baz';
+```
+
 
 ## License
 
