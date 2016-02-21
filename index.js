@@ -92,12 +92,9 @@ function groupConsecutive(tokens) {
 function alignTokens(tokens) {
   var alignToCol = Math.max.apply(Math, tokens.map(getMinTokenColumn));
   tokens.forEach(function(token) {
-    var whitespace = token.prev;
-    if (!isWhiteSpace(whitespace)) {
-      throw new Error('no whitespace before token to align');
-    }
+    token.prev.value.replace(/ *$/, '');
     var alignDiff = alignToCol - getMinTokenColumn(token);
-    whitespace.value = repeat(' ', alignDiff + 1);
+    token.prev.value += repeat(' ', alignDiff);
   });
 }
 
