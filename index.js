@@ -2,8 +2,15 @@ var rocambole = require('rocambole');
 var flatten   = require('array-flatten');
 
 var alignedNodes = [];
+var opts         = {
+    ObjectExpression:      1,
+    VariableDeclaration:   1,
+    AssignmentExpression:  1,
+    TernaryExpression:     0,
+};
 
-exports.setOptions = function(opts) {
+exports.setOptions = function(options) {
+  Object.assign(opts, options.align);
   alignedNodes = [];
 };
 
@@ -12,18 +19,23 @@ exports.transform = function(ast) {
 
     if (alignedNodes.indexOf(node) !== -1) return;
 
-    if (isObjectExpression(node)) {
+    if (opts.ObjectExpression && isObjectExpression(node)) {
       alignObjectExpression(node);
     }
 
-    if (isVariableDeclaration(node)) {
+    if (opts.VariableDeclaration && isVariableDeclaration(node)) {
       alignVariableDeclaration(node);
     }
 
-    if (isExpressionStatement(node) && isAssignmentExpression(node.expression)) {
+    if (opts.AssignmentExpression && isExpressionStatement(node) && isAssignmentExpression(node.expression)) {
       alignAssignmentExpression(node);
     }
-  });
+
+    if(opts.TernaryExpression && isExpressionStatement(node) && isConditionalExpression(node.expression)){
+      alignTernaryCondition(node);
+      alignTernaryResult(node);
+    }
+  })
 };
 
 function alignObjectExpression(node) {
@@ -61,6 +73,38 @@ function alignAssignmentExpression(node) {
   var tokens = nodes
     .map(function(node) {
       return findNextInLine(node.expression.left.startToken, isEqualPunctuator);
+    })
+    .filter(truthy);
+
+  align(tokens);
+}
+
+function alignTernaryCondition(node) {
+  var nodes = getNext(node, function(node){
+        return isExpressionStatement(node) && isConditionalExpression(node.expression)
+  });
+
+  alignedNodes = alignedNodes.concat(nodes);
+
+  var tokens = nodes
+    .map(function(node) {
+      return findNextInLine(node.expression.test.startToken, isTernaryConditionPunctuator);
+    })
+    .filter(truthy);
+
+  align(tokens);
+}
+
+function alignTernaryResult(node) {
+  var nodes = getNext(node, function(node){
+        return isExpressionStatement(node) && isConditionalExpression(node.expression)
+  });
+
+  alignedNodes = alignedNodes.concat(nodes);
+
+  var tokens = nodes
+    .map(function(node) {
+      return findNextInLine(node.expression.consequent.startToken, isTernaryResultPunctuator);
     })
     .filter(truthy);
 
@@ -167,6 +211,14 @@ function isEqualPunctuator(token) {
   return token.type == 'Punctuator' && token.value == '=';
 }
 
+function isTernaryConditionPunctuator(token) {
+  return token.type == 'Punctuator' && token.value == '?';
+}
+
+function isTernaryResultPunctuator(token) {
+  return token.type == 'Punctuator' && token.value == ':';
+}
+
 function truthy(v) {
   return !!v;
 }
@@ -185,6 +237,10 @@ function isAssignmentExpression(node) {
 
 function isObjectExpression(node) {
   return node.type === 'ObjectExpression';
+}
+
+function isConditionalExpression(node) {
+  return node.type === 'ConditionalExpression';
 }
 
 function repeat(str, n) {

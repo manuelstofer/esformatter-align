@@ -54,9 +54,18 @@ describe('compare input/output', function() {
       expect(output).to.be.eql(getFile('9.out'));
     });
 
-    it('should align assignment AssignmentExpression', function() {
+    it('should align AssignmentExpression', function() {
       var output = esformatter.format(getFile('10.in'), {});
       expect(output).to.be.eql(getFile('10.out'));
+    });
+
+    it('should align TernaryConditionalExpression', function() {
+      var output = esformatter.format(getFile('11.in'), {
+        align: {
+            TernaryExpression: 1
+        }
+      });
+      expect(output).to.be.eql(getFile('11.out'));
     });
   });
 });
