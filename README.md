@@ -78,6 +78,26 @@ foo      = 'bar';
 fooooooo = 'baz';
 ```
 
+## Config
+
+Optionally disable alignment of specific expressions
+
+```js
+{
+  "esformatter": {
+    // ...
+  },
+  "indent": {
+    // ...
+  },
+  "align": {
+    "ObjectExpression":     1,
+    "VariableDeclaration":  1,
+    "AssignmentExpression": 1
+  },
+  // ...
+}
+```
 
 ## License
 

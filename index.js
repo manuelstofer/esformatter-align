@@ -2,8 +2,14 @@ var rocambole = require('rocambole');
 var flatten   = require('array-flatten');
 
 var alignedNodes = [];
+var opts         = {
+    ObjectExpression:     1,
+    VariableDeclaration:  1,
+    AssignmentExpression: 1
+};
 
-exports.setOptions = function(opts) {
+exports.setOptions = function(options) {
+  Object.assign(opts, options.align);
   alignedNodes = [];
 };
 
@@ -12,15 +18,15 @@ exports.transform = function(ast) {
 
     if (alignedNodes.indexOf(node) !== -1) return;
 
-    if (isObjectExpression(node)) {
+    if (opts.ObjectExpression && isObjectExpression(node)) {
       alignObjectExpression(node);
     }
 
-    if (isVariableDeclaration(node)) {
+    if (opts.VariableDeclaration && isVariableDeclaration(node)) {
       alignVariableDeclaration(node);
     }
 
-    if (isExpressionStatement(node) && isAssignmentExpression(node.expression)) {
+    if (opts.AssignmentExpression && isExpressionStatement(node) && isAssignmentExpression(node.expression)) {
       alignAssignmentExpression(node);
     }
   });
