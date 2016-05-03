@@ -78,6 +78,22 @@ foo      = 'bar';
 fooooooo = 'baz';
 ```
 
+### Ternary ConditionalExpressions
+
+input:
+
+```js
+foo ? x : 'bar';
+fooooooo ? y : 'baz';
+```
+
+output:
+
+```js
+foo      ? x : 'bar';
+fooooooo ? y : 'baz';
+```
+
 ## Config
 
 Optionally disable alignment of specific expressions
@@ -93,7 +109,8 @@ Optionally disable alignment of specific expressions
   "align": {
     "ObjectExpression":     1,
     "VariableDeclaration":  1,
-    "AssignmentExpression": 1
+    "AssignmentExpression": 1,
+    "TernaryExpression":    1
   },
   // ...
 }
