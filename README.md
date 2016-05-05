@@ -78,7 +78,7 @@ foo      = 'bar';
 fooooooo = 'baz';
 ```
 
-### Ternary ConditionalExpressions
+### TernaryExpression
 
 input:
 

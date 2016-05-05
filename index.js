@@ -3,10 +3,10 @@ var flatten   = require('array-flatten');
 
 var alignedNodes = [];
 var opts         = {
-    ObjectExpression:      1,
-    VariableDeclaration:   1,
-    AssignmentExpression:  1,
-    TernaryExpression:     0,
+  ObjectExpression:     1,
+  VariableDeclaration:  1,
+  AssignmentExpression: 1,
+  TernaryExpression:    0,
 };
 
 exports.setOptions = function(options) {
@@ -31,11 +31,11 @@ exports.transform = function(ast) {
       alignAssignmentExpression(node);
     }
 
-    if(opts.TernaryExpression && isExpressionStatement(node) && isConditionalExpression(node.expression)){
+    if (opts.TernaryExpression && isExpressionStatement(node) && isConditionalExpression(node.expression)) {
       alignTernaryCondition(node);
       alignTernaryResult(node);
     }
-  })
+  });
 };
 
 function alignObjectExpression(node) {
@@ -80,8 +80,8 @@ function alignAssignmentExpression(node) {
 }
 
 function alignTernaryCondition(node) {
-  var nodes = getNext(node, function(node){
-        return isExpressionStatement(node) && isConditionalExpression(node.expression)
+  var nodes = getNext(node, function(node) {
+    return isExpressionStatement(node) && isConditionalExpression(node.expression);
   });
 
   alignedNodes = alignedNodes.concat(nodes);
@@ -96,8 +96,8 @@ function alignTernaryCondition(node) {
 }
 
 function alignTernaryResult(node) {
-  var nodes = getNext(node, function(node){
-        return isExpressionStatement(node) && isConditionalExpression(node.expression)
+  var nodes = getNext(node, function(node) {
+    return isExpressionStatement(node) && isConditionalExpression(node.expression);
   });
 
   alignedNodes = alignedNodes.concat(nodes);
