@@ -7,6 +7,7 @@ var opts         = {
   VariableDeclaration:  1,
   AssignmentExpression: 1,
   TernaryExpression:    0,
+  OrExpression:         0
 };
 
 exports.setOptions = function(options) {
@@ -34,6 +35,10 @@ exports.transform = function(ast) {
     if (opts.TernaryExpression && isExpressionStatement(node) && isConditionalExpression(node.expression)) {
       alignTernaryCondition(node);
       alignTernaryResult(node);
+    }
+
+    if (opts.OrExpression && isExpressionStatement(node) && isLogicalOrExpression(node.expression)) {
+      alignLogicalOrExpression(node);
     }
   });
 };
@@ -77,6 +82,25 @@ function alignAssignmentExpression(node) {
     .filter(truthy);
 
   align(tokens);
+}
+
+function alignLogicalOrExpression(node) {
+  var nodes = getNext(node, function(node) {
+    return isExpressionStatement(node) && isLogicalOrExpression(node.expression);
+  });
+
+  alignedNodes = alignedNodes.concat(nodes);
+  var tokens = nodes
+    .map(function(node) {
+      return findAllInLine(node.expression.left.startToken, isLogicalOrPunctuator);
+    })
+    .filter(truthy);
+
+  var tokensByOccurance = groupByOccuranceIndex(tokens);
+  tokensByOccurance.forEach(function(tokens) {
+    align(tokens);
+  });
+
 }
 
 function alignTernaryCondition(node) {
@@ -131,6 +155,21 @@ function groupConsecutive(tokens) {
   });
   if (group.length) groups.push(group);
   return groups;
+}
+
+function groupByOccuranceIndex(tokenLines) {
+  var tokensGrouped = [];
+  var lengths       = tokenLines.map(function(tokenLines) {
+    return tokenLines.length;
+  });
+  var maxLength = Math.max.apply(Math, lengths);
+  for (var i = 0; i < maxLength; i++) {
+    tokensGrouped[i] = [];
+    tokenLines.forEach(function(tokens) {
+      tokensGrouped[i].push(tokens[i]);
+    });
+  }
+  return tokensGrouped;
 }
 
 function alignTokens(tokens) {
@@ -191,6 +230,18 @@ function findNextInLine(token, callback) {
   }
 }
 
+function findAllInLine(token, callback) {
+  var nodes = [];
+  while (token && !isLineBreak(token)) {
+    if (callback(token)) {
+      nodes.push(token);
+    }
+    token = token.next;
+  }
+
+  return nodes;
+}
+
 function isFirstOfLine(token) {
   return isFirst(token) || isLineBreak(token.prev);
 }
@@ -218,6 +269,9 @@ function isTernaryConditionPunctuator(token) {
 function isTernaryResultPunctuator(token) {
   return token.type == 'Punctuator' && token.value == ':';
 }
+function isLogicalOrPunctuator(token) {
+  return token.type == 'Punctuator' && token.value == '||';
+}
 
 function truthy(v) {
   return !!v;
@@ -241,6 +295,10 @@ function isObjectExpression(node) {
 
 function isConditionalExpression(node) {
   return node.type === 'ConditionalExpression';
+}
+
+function isLogicalOrExpression(node) {
+  return node.type === 'LogicalExpression' && node.operator == '||';
 }
 
 function repeat(str, n) {
