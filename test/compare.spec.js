@@ -67,6 +67,15 @@ describe('compare input/output', function() {
       });
       expect(output).to.be.eql(getFile('11.out'));
     });
+
+    it('should align LogicalOrExpression', function() {
+      var output = esformatter.format(getFile('12.in'), {
+        align: {
+            OrExpression: 1
+        }
+      });
+      expect(output).to.be.eql(getFile('12.out'));
+    });
   });
 });
 

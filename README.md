@@ -78,7 +78,7 @@ foo      = 'bar';
 fooooooo = 'baz';
 ```
 
-### Ternary ConditionalExpressions
+### TernaryExpression
 
 input:
 
@@ -92,6 +92,22 @@ output:
 ```js
 foo      ? x : 'bar';
 fooooooo ? y : 'baz';
+```
+
+### OrExpression
+
+input:
+
+```js
+foo || x || 'bar';
+fooooooo || yy || 'baz';
+```
+
+output:
+
+```js
+foo      || x  || 'bar';
+fooooooo || yy || 'baz';
 ```
 
 ## Config
@@ -110,7 +126,8 @@ Optionally disable alignment of specific expressions
     "ObjectExpression":     1,
     "VariableDeclaration":  1,
     "AssignmentExpression": 1,
-    "TernaryExpression":    1
+    "TernaryExpression":    0,
+    "OrExpression":         0
   },
   // ...
 }
