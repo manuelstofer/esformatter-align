@@ -175,9 +175,16 @@ function groupByOccuranceIndex(tokenLines) {
 function alignTokens(tokens) {
   var alignToCol = Math.max.apply(Math, tokens.map(getMinTokenColumn));
   tokens.forEach(function(token) {
-    token.prev.value.replace(/ *$/, '');
+    if (isWhiteSpace(token)) {
+      token.prev.value.replace(/ *$/, '');
+    }
     var alignDiff = alignToCol - getMinTokenColumn(token);
-    token.prev.value += repeat(' ', alignDiff);
+    if (isSpreadPunctuator(token.prev)) {
+      token.prev.prev.value += repeat(' ', alignDiff);
+    } else {
+      token.prev.value += repeat(' ', alignDiff);
+    }
+
   });
 }
 
@@ -187,7 +194,7 @@ function getMinTokenColumn(token) {
   for (var t = lineFirst; t !== token; t = t.next) {
     if (isWhiteSpace(t) && t == token.prev) {
       pos += 1;
-    } else {
+    } else if (!isSpreadPunctuator(t)) {
       pos += t.value.length;
     }
 
@@ -271,6 +278,10 @@ function isTernaryResultPunctuator(token) {
 }
 function isLogicalOrPunctuator(token) {
   return token.type == 'Punctuator' && token.value == '||';
+}
+
+function isSpreadPunctuator(token) {
+  return token.type == 'Punctuator' && token.value == '...';
 }
 
 function truthy(v) {

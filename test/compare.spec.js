@@ -26,6 +26,11 @@ describe('compare input/output', function() {
       expect(output).to.be.eql(getFile('3.out'));
     });
 
+    it('should align ObjectExpression with object rest spread transform operator', function() {
+      var output = esformatter.format(getFile('13.in'), {});
+      expect(output).to.be.eql(getFile('13.out'));
+    });
+
     it('should align only consecutive lines', function() {
       var output = esformatter.format(getFile('4.in'), {});
       expect(output).to.be.eql(getFile('4.out'));

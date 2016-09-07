@@ -24,7 +24,7 @@
   "homepage": "https://github.com/manuelstofer/esformatter-align",
   "devDependencies": {
     "chai": "^3.4",
-    "esformatter": "^0.8.1",
+    "esformatter": "^0.9.6",
     "esformatter-limit-linebreaks": "0.0.2",
     "mocha": "https://github.com/millermedeiros/mocha/tarball/latest"
   },
