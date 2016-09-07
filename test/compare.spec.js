@@ -62,7 +62,7 @@ describe('compare input/output', function() {
     it('should align TernaryConditionalExpression', function() {
       var output = esformatter.format(getFile('11.in'), {
         align: {
-            TernaryExpression: 1
+          TernaryExpression: 1
         }
       });
       expect(output).to.be.eql(getFile('11.out'));
@@ -71,7 +71,7 @@ describe('compare input/output', function() {
     it('should align LogicalOrExpression', function() {
       var output = esformatter.format(getFile('12.in'), {
         align: {
-            OrExpression: 1
+          OrExpression: 1
         }
       });
       expect(output).to.be.eql(getFile('12.out'));
@@ -82,7 +82,7 @@ describe('compare input/output', function() {
       expect(output).to.be.eql(getFile('13.out'));
     });
 
-    it('should align object rest spread transform on the value side when specified in options', function() {
+    it('should align object rest spread transform on the value side when specified in SpreadAlignment', function() {
       var output = esformatter.format(getFile('14.in'), {
         align: {
           SpreadAlignment: 'value'
@@ -96,7 +96,7 @@ describe('compare input/output', function() {
       expect(output).to.be.eql(getFile('15.out'));
     });
 
-    it('should align shorthand property on the key side when specified in options', function() {
+    it('should align shorthand property on the key side when specified in ShorthandAlignment', function() {
       var output = esformatter.format(getFile('16.in'), {
         align: {
           ShorthandAlignment: 'value'
