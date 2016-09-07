@@ -7,7 +7,9 @@ var opts         = {
   VariableDeclaration:  1,
   AssignmentExpression: 1,
   TernaryExpression:    0,
-  OrExpression:         0
+  OrExpression:         0,
+  SpreadAlignment:      'key',
+  ShorthandAlignment:   'key'
 };
 
 exports.setOptions = function(options) {
@@ -175,9 +177,21 @@ function groupByOccuranceIndex(tokenLines) {
 function alignTokens(tokens) {
   var alignToCol = Math.max.apply(Math, tokens.map(getMinTokenColumn));
   tokens.forEach(function(token) {
-    token.prev.value.replace(/ *$/, '');
+    if (isWhiteSpace(token.prev)) {
+      token.prev.value.replace(/ *$/, '');
+    }
     var alignDiff = alignToCol - getMinTokenColumn(token);
-    token.prev.value += repeat(' ', alignDiff);
+    if (isSpreadPunctuator(token.prev)) {
+      if (opts.SpreadAlignment === 'value') {
+        token.prev.prev.value += repeat(' ', alignDiff);
+      }
+    } else if (isShorthandProperty(token)) {
+      if (opts.ShorthandAlignment === 'value') {
+        token.prev.value += repeat(' ', alignDiff);
+      }
+    } else {
+      token.prev.value += repeat(' ', alignDiff);
+    }
   });
 }
 
@@ -187,17 +201,19 @@ function getMinTokenColumn(token) {
   for (var t = lineFirst; t !== token; t = t.next) {
     if (isWhiteSpace(t) && t == token.prev) {
       pos += 1;
-    } else {
+    } else if (isSpreadPunctuator(t)) {
+      if (opts.SpreadAlignment === 'key') {
+        pos += t.value.length;
+      }
+    } else  {
       pos += t.value.length;
     }
-
   }
   return pos;
 }
 
 function getTokenLine(token) {
   var line = 0;
-
   while (!isFirst(token)) {
     token = token.prev;
     if (isLineBreak(token)) {
@@ -233,13 +249,27 @@ function findNextInLine(token, callback) {
 function findAllInLine(token, callback) {
   var nodes = [];
   while (token && !isLineBreak(token)) {
-    if (callback(token)) {
+    if (!callback || callback(token)) {
       nodes.push(token);
     }
     token = token.next;
   }
-
   return nodes;
+}
+
+function isShorthandProperty(token) {
+  var count = 0;
+  while (!isFirstOfLine(token)) {
+    if (isWhiteSpace(token)) {
+      count++;
+    }
+    token = token.prev;
+  }
+  return count === 0;
+}
+
+function isIdentifier(token) {
+  return token.type == 'Identifier';
 }
 
 function isFirstOfLine(token) {
@@ -269,8 +299,13 @@ function isTernaryConditionPunctuator(token) {
 function isTernaryResultPunctuator(token) {
   return token.type == 'Punctuator' && token.value == ':';
 }
+
 function isLogicalOrPunctuator(token) {
   return token.type == 'Punctuator' && token.value == '||';
+}
+
+function isSpreadPunctuator(token) {
+  return token.type == 'Punctuator' && token.value == '...';
 }
 
 function truthy(v) {
