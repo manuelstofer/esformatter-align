@@ -2,6 +2,6 @@ var y = {
   blu: 1
 };
 var x = {
-  ...y,
+       y,
   bla: 5
 };

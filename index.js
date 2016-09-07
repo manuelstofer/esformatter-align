@@ -8,7 +8,8 @@ var opts         = {
   AssignmentExpression: 1,
   TernaryExpression:    0,
   OrExpression:         0,
-  SpreadAlignment:      'key'
+  SpreadAlignment:      'key',
+  ShorthandAlignment:   'key'
 };
 
 exports.setOptions = function(options) {
@@ -184,6 +185,10 @@ function alignTokens(tokens) {
       if (opts.SpreadAlignment === 'value') {
         token.prev.prev.value += repeat(' ', alignDiff);
       }
+    } else if (isShorthandProperty(token)) {
+      if (opts.ShorthandAlignment === 'value') {
+        token.prev.value += repeat(' ', alignDiff);
+      }
     } else {
       token.prev.value += repeat(' ', alignDiff);
     }
@@ -196,10 +201,13 @@ function getMinTokenColumn(token) {
   for (var t = lineFirst; t !== token; t = t.next) {
     if (isWhiteSpace(t) && t == token.prev) {
       pos += 1;
-    } else if (isSpreadPunctuator(t) && opts.SpreadAlignment === 'key' || !isSpreadPunctuator(t)) {
+    } else if (isSpreadPunctuator(t)) {
+      if (opts.SpreadAlignment === 'key') {
+        pos += t.value.length;
+      }
+    } else  {
       pos += t.value.length;
     }
-
   }
   return pos;
 }
@@ -247,6 +255,21 @@ function findAllInLine(token, callback) {
     token = token.next;
   }
   return nodes;
+}
+
+function isShorthandProperty(token) {
+  var count = 0;
+  while (!isFirstOfLine(token)) {
+    if (isWhiteSpace(token)) {
+      count++;
+    }
+    token = token.prev;
+  }
+  return count === 0;
+}
+
+function isIdentifier(token) {
+  return token.type == 'Identifier';
 }
 
 function isFirstOfLine(token) {

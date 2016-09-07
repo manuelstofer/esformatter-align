@@ -1,4 +1,5 @@
+var y = { blu: 1 };
 var x = {
-       ...x,
+       ...y,
   bla: 5
 };

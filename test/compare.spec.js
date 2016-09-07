@@ -90,6 +90,20 @@ describe('compare input/output', function() {
       });
       expect(output).to.be.eql(getFile('14.out'));
     });
+
+    it('should align shorthand property on the key side by default', function() {
+      var output = esformatter.format(getFile('15.in'), {});
+      expect(output).to.be.eql(getFile('15.out'));
+    });
+
+    it('should align shorthand property on the key side when specified in options', function() {
+      var output = esformatter.format(getFile('16.in'), {
+        align: {
+          ShorthandAlignment: 'value'
+        }
+      });
+      expect(output).to.be.eql(getFile('16.out'));
+    });
   });
 });
 
