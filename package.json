@@ -25,7 +25,7 @@
   "devDependencies": {
     "chai": "^3.4",
     "esformatter": "^0.9.6",
-    "esformatter-limit-linebreaks": "0.0.2",
+    "esformatter-limit-linebreaks": "0.0.3",
     "mocha": "https://github.com/millermedeiros/mocha/tarball/latest"
   },
   "dependencies": {
