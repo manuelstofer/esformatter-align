@@ -110,9 +110,57 @@ foo      || x  || 'bar';
 fooooooo || yy || 'baz';
 ```
 
+### SpreadAlignment, ShorthandAlignment
+
+The object spread operator and shorthand can either be aligned with
+the keys (default) or with the values.
+
+input:
+
+```js
+var y = { blu: 1 };
+var z = true;
+var x = {
+z,
+    ...y,
+ bla: 5
+};
+
+```
+
+output (default: keys):
+
+```js
+var y = {
+  blu: 1
+};
+var x = {
+  z,
+  ...y,
+  bla: 5
+};
+
+```
+
+output (option: value):
+
+```js
+var y = {
+  blu: 1
+};
+var x = {
+       z,
+       ...y,
+  bla: 5
+};
+
+```
+
+
 ## Config
 
 Optionally disable alignment of specific expressions
+and set some other options
 
 ```js
 {
@@ -127,7 +175,9 @@ Optionally disable alignment of specific expressions
     "VariableDeclaration":  1,
     "AssignmentExpression": 1,
     "TernaryExpression":    0,
-    "OrExpression":         0
+    "OrExpression":         0,
+    "SpreadAlignment":      "key", // optional: "value"
+    "ShorthandAlignment":   "key"  // optional: "value"
   },
   // ...
 }
