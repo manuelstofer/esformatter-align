@@ -26,11 +26,6 @@ describe('compare input/output', function() {
       expect(output).to.be.eql(getFile('3.out'));
     });
 
-    it('should align ObjectExpression with object rest spread transform operator', function() {
-      var output = esformatter.format(getFile('13.in'), {});
-      expect(output).to.be.eql(getFile('13.out'));
-    });
-
     it('should align only consecutive lines', function() {
       var output = esformatter.format(getFile('4.in'), {});
       expect(output).to.be.eql(getFile('4.out'));
@@ -80,6 +75,20 @@ describe('compare input/output', function() {
         }
       });
       expect(output).to.be.eql(getFile('12.out'));
+    });
+
+    it('should align object rest spread transform on the key side by default', function() {
+      var output = esformatter.format(getFile('13.in'), {});
+      expect(output).to.be.eql(getFile('13.out'));
+    });
+
+    it('should align object rest spread transform on the value side when specified in options', function() {
+      var output = esformatter.format(getFile('14.in'), {
+        align: {
+          SpreadAlignment: 'value'
+        }
+      });
+      expect(output).to.be.eql(getFile('14.out'));
     });
   });
 });

@@ -7,7 +7,8 @@ var opts         = {
   VariableDeclaration:  1,
   AssignmentExpression: 1,
   TernaryExpression:    0,
-  OrExpression:         0
+  OrExpression:         0,
+  SpreadAlignment:      'key'
 };
 
 exports.setOptions = function(options) {
@@ -175,16 +176,17 @@ function groupByOccuranceIndex(tokenLines) {
 function alignTokens(tokens) {
   var alignToCol = Math.max.apply(Math, tokens.map(getMinTokenColumn));
   tokens.forEach(function(token) {
-    if (isWhiteSpace(token)) {
+    if (isWhiteSpace(token.prev)) {
       token.prev.value.replace(/ *$/, '');
     }
     var alignDiff = alignToCol - getMinTokenColumn(token);
     if (isSpreadPunctuator(token.prev)) {
-      token.prev.prev.value += repeat(' ', alignDiff);
+      if (opts.SpreadAlignment === 'value') {
+        token.prev.prev.value += repeat(' ', alignDiff);
+      }
     } else {
       token.prev.value += repeat(' ', alignDiff);
     }
-
   });
 }
 
@@ -194,7 +196,7 @@ function getMinTokenColumn(token) {
   for (var t = lineFirst; t !== token; t = t.next) {
     if (isWhiteSpace(t) && t == token.prev) {
       pos += 1;
-    } else if (!isSpreadPunctuator(t)) {
+    } else if (isSpreadPunctuator(t) && opts.SpreadAlignment === 'key' || !isSpreadPunctuator(t)) {
       pos += t.value.length;
     }
 
@@ -204,7 +206,6 @@ function getMinTokenColumn(token) {
 
 function getTokenLine(token) {
   var line = 0;
-
   while (!isFirst(token)) {
     token = token.prev;
     if (isLineBreak(token)) {
@@ -240,12 +241,11 @@ function findNextInLine(token, callback) {
 function findAllInLine(token, callback) {
   var nodes = [];
   while (token && !isLineBreak(token)) {
-    if (callback(token)) {
+    if (!callback || callback(token)) {
       nodes.push(token);
     }
     token = token.next;
   }
-
   return nodes;
 }
 
@@ -276,6 +276,7 @@ function isTernaryConditionPunctuator(token) {
 function isTernaryResultPunctuator(token) {
   return token.type == 'Punctuator' && token.value == ':';
 }
+
 function isLogicalOrPunctuator(token) {
   return token.type == 'Punctuator' && token.value == '||';
 }
